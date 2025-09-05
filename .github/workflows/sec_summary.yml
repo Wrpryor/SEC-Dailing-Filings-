@@ -1,0 +1,30 @@
+name: SEC yesterday summary
+
+on:
+  schedule:
+    # 05:30 UTC every weekday (≈ 01:30 ET after DST)
+    - cron: '30 5 * * 1-5'
+  workflow_dispatch:   # manual button in GitHub UI
+
+jobs:
+  mail-summary:
+    runs-on: ubuntu-latest
+    steps:
+      - name: checkout repo
+        uses: actions/checkout@v4
+
+      - name: set up Python
+        uses: actions/setup-python@v4
+        with:
+          python-version: '3.11'
+
+      - name: install deps
+        run: pip install feedparser yagmail
+
+      - name: run script
+        env:
+          EMAIL_TO:   "wrpryor1000@gmail.com"
+          EMAIL_FROM: "wrpryor1000@gmail.com"
+          GMAIL_USER: "wrpryor1000@gmail.com"
+          GMAIL_PASS: ${{ secrets.GMAIL_APP_PASS }}   # stored in GitHub
+        run: python sec_yesterday.py
