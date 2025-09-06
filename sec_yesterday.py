@@ -10,10 +10,6 @@ import os
 import feedparser
 import yagmail
 import pytz
-from urllib.parse import quote_plus
-FEED = "https://www.sec.gov/cgi-bin/browse-edgar?action=getcurrent&CIK=&type={}&company=&dateb=&owner=include&count=100&search_text=&output=atom"
-
-url = FEED.format(quote_plus(form))
 
 # ----------  date logic (US/Eastern)  ----------
 EASTERN = pytz.timezone("US/Eastern")
@@ -31,18 +27,19 @@ GMAIL_USER = os.getenv("GMAIL_USER", "wrpryor1000@gmail.com")
 GMAIL_PASS = os.getenv("GMAIL_APP_PASS", "").replace(" ", "")
 
 # ----------  forms (exact spelling)  ----------
-FORMS = ("8-K", "DEF 14A", "13D", "13G")   # note the space in DEF 14A
+FORMS = ("8-K", "DEF 14A", "13D", "13G")
 FEED  = ("https://www.sec.gov/cgi-bin/browse-edgar?action=getcurrent&CIK=&type={}"
          "&company=&dateb=&owner=include&count=100&search_text=&output=atom")
 
 # ----------  fetch  ----------
 def fetch_filings(form: str, date: str):
+    from urllib.parse import quote_plus          # local import
     url = FEED.format(quote_plus(form))          # encode space / hyphen
     parsed = feedparser.parse(url)
     hits = []
     for entry in parsed.entries:
         accept = getattr(entry, "edgar_acceptancedatetime", None)
-        if not accept:                           # skip if missing
+        if not accept:
             continue
         accept_date = accept[:10]                # yyyy-mm-dd part
         if accept_date != date:
