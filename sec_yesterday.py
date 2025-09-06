@@ -10,6 +10,7 @@ import os
 import feedparser
 import yagmail
 import pytz
+from urllib.parse import quote_plus
 
 # ----------  date logic (US/Eastern)  ----------
 EASTERN = pytz.timezone("US/Eastern")
@@ -33,7 +34,6 @@ FEED  = ("https://www.sec.gov/cgi-bin/browse-edgar?action=getcurrent&CIK=&type={
 
 # ----------  fetch  ----------
 def fetch_filings(form: str, date: str):
-    from urllib.parse import quote_plus          # local import
     url = FEED.format(quote_plus(form))          # encode space / hyphen
     parsed = feedparser.parse(url)
     hits = []
