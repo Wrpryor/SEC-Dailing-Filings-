@@ -11,6 +11,9 @@ import feedparser
 import yagmail
 import pytz
 from urllib.parse import quote_plus
+FEED = "https://www.sec.gov/cgi-bin/browse-edgar?action=getcurrent&CIK=&type={}&company=&dateb=&owner=include&count=100&search_text=&output=atom"
+
+url = FEED.format(quote_plus(form))
 
 # ----------  date logic (US/Eastern)  ----------
 EASTERN = pytz.timezone("US/Eastern")
@@ -28,7 +31,7 @@ GMAIL_USER = os.getenv("GMAIL_USER", "wrpryor1000@gmail.com")
 GMAIL_PASS = os.getenv("GMAIL_APP_PASS", "").replace(" ", "")
 
 # ----------  forms (exact spelling)  ----------
-FORMS = ("8-K", "DEF 14A", "13D", "13G")
+FORMS = ("8-K", "DEF 14A", "13D", "13G")   # note the space in DEF 14A
 FEED  = ("https://www.sec.gov/cgi-bin/browse-edgar?action=getcurrent&CIK=&type={}"
          "&company=&dateb=&owner=include&count=100&search_text=&output=atom")
 
